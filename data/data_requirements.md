@@ -5,7 +5,7 @@ Give the model a comprehensive vision of British Parlimentary (BP) debate and BP
 # Raw Data
 Json data that contains information on motions. This includes:
 
-<ol>
+<ul>
     <li>_id</li>
     <li>date</li>
     <li>Region</li>
@@ -29,7 +29,7 @@ Json data that contains information on motions. This includes:
     <li>Video URLs</li>
     <li>__v</li>
     <li>Created At</li>
-</ol>
+</ul>
 
 # Instruction Data
 The data which the model will fine-tune on. It will be a csv structured like this:
@@ -45,7 +45,7 @@ The data which the model will fine-tune on. It will be a csv structured like thi
 # Question Format
 Here are some examples of questions:
 
-<ol>
+<ul>
     <li>Give me a resolution about x</li>
     <li>I would like arguments for x</li>
     <li>Please can I have an argument on the x side for x</li>
@@ -54,23 +54,23 @@ Here are some examples of questions:
     <li>Please write me a x resolution</li>
     <li>I want a resolution and some arguments for and against it</li>
     <li>Write me a resolution without an infoslide</li>
-</ol>
+</ul>
 
 # Output Format
 Output usually looks like one or more of these things:
 
-<ol>
+<ul>
     <li>A resolution</li>
     <li>An infoslide</li>
     <li>Arguments for</li>
     <li>Arguments against</li>
-</ol>
+</ul>
 
 # Tags
 Some properties will be used to create tags
 
-<ol>
+<ul>
     <li>Types</li>
     <li>Infoslide presence</li>
     <li>Category of resolution</li>
-</ol>
+</ul>
