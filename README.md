@@ -1,6 +1,6 @@
 BP MOTION AI
 =============
-Making British Parlimentary debate education easy and free.
+Making British Parliamentary debate education easy and free.
 
 # Fine-tuning project for the llama LLM
 <p>The goal of the project is to train the llama 3.1 model to write quality British Parliamentary debate motions, arguments for either side of a motion, and infoslides for motions.</p>
