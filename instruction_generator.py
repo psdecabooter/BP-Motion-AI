@@ -1,5 +1,6 @@
 import json
 import random
+import csv
 
 class InstructionGenerator:
     """
@@ -207,18 +208,18 @@ class InstructionGenerator:
             question_string = f"Make a {motion_verb}motion {infoslide_string}{topics_string}{pro_string}{con_string}"
             
         # generate answer_string
-        answer_string = motion['Motion'] + ". "
+        answer_string = motion['Motion'] + " "
         if infoslide_string != "":
-            answer_string += "Infoslide: " + motion['Infoslide'] + ". "
+            answer_string += "Infoslide: " + motion['Infoslide'] + " "
         if pro_string != "":
             # Chose a random pro argument
             pro_index = random.randint(0,len(motion['proArguments'])-1)
             # Parse argument
             pro_arg = motion['proArguments'][pro_index]
-            premise = "" if not 'Premise' in pro_arg else "Premise: " + pro_arg['Premise'] + ". "
-            comparative = "" if not 'Comparative' in pro_arg else "Comparative: " + pro_arg['Comparative'] + ". "
-            mechanism = "" if not 'Mechanism' in pro_arg else "Mechanism: " + pro_arg['Mechanism'] + ". "
-            impact = "" if not 'Impact' in pro_arg else "Impact: " + pro_arg['Impact'] + ". "
+            premise = "" if not 'Premise' in pro_arg else "Premise: " + pro_arg['Premise'] + " "
+            comparative = "" if not 'Comparative' in pro_arg else "Comparative: " + pro_arg['Comparative'] + " "
+            mechanism = "" if not 'Mechanism' in pro_arg else "Mechanism: " + pro_arg['Mechanism'] + " "
+            impact = "" if not 'Impact' in pro_arg else "Impact: " + pro_arg['Impact'] + " "
             # Add pro Argument
             answer_string += "Here is an argument for the Government side. " + premise + comparative + mechanism + impact
         if con_string != "":
@@ -226,10 +227,10 @@ class InstructionGenerator:
             con_index = random.randint(0,len(motion['conArguments'])-1)
             # Parse argument
             con_arg = motion['conArguments'][con_index]
-            premise = "" if not 'Premise' in con_arg else "Premise: " + con_arg['Premise'] + ". "
-            comparative = "" if not 'Comparative' in con_arg else "Comparative: " + con_arg['Comparative'] + ". "
-            mechanism = "" if not 'Mechanism' in con_arg else "Mechanism: " + con_arg['Mechanism'] + ". "
-            impact = "" if not 'Impact' in con_arg else "Impact: " + con_arg['Impact'] + ". "
+            premise = "" if not 'Premise' in con_arg else "Premise: " + con_arg['Premise'] + " "
+            comparative = "" if not 'Comparative' in con_arg else "Comparative: " + con_arg['Comparative'] + " "
+            mechanism = "" if not 'Mechanism' in con_arg else "Mechanism: " + con_arg['Mechanism'] + " "
+            impact = "" if not 'Impact' in con_arg else "Impact: " + con_arg['Impact'] + " "
             # Add pro Argument
             answer_string += "Here is an argument for the Opposition side. " + premise + comparative + mechanism + impact
         return [question_string,answer_string,tags_string]
@@ -258,7 +259,7 @@ class InstructionGenerator:
         
         # generate an instruction question if no arguments are included on the topic
         if len(motion['proArguments']) < 1 and len(motion['conArguments']) < 1:
-            return generate_motion_instruction(self, motion)
+            return self.generate_motion_instruction(motion)
 
         # Store tags:
         tags = []
@@ -422,10 +423,10 @@ class InstructionGenerator:
                     answer_string += f"Government argument {pro_index+1}. "
                 # Parse argument
                 pro_arg = motion['proArguments'][pro_index]
-                premise = "" if not 'Premise' in pro_arg else "Premise: " + pro_arg['Premise'] + ". "
-                comparative = "" if not 'Comparative' in pro_arg else "Comparative: " + pro_arg['Comparative'] + ". "
-                mechanism = "" if not 'Mechanism' in pro_arg else "Mechanism: " + pro_arg['Mechanism'] + ". "
-                impact = "" if not 'Impact' in pro_arg else "Impact: " + pro_arg['Impact'] + ". "
+                premise = "" if not 'Premise' in pro_arg else "Premise: " + pro_arg['Premise'] + " "
+                comparative = "" if not 'Comparative' in pro_arg else "Comparative: " + pro_arg['Comparative'] + " "
+                mechanism = "" if not 'Mechanism' in pro_arg else "Mechanism: " + pro_arg['Mechanism'] + " "
+                impact = "" if not 'Impact' in pro_arg else "Impact: " + pro_arg['Impact'] + " "
                 # Add pro Argument
                 answer_string += premise + comparative + mechanism + impact
         if con_request_string != "":
@@ -441,10 +442,10 @@ class InstructionGenerator:
                     answer_string += f"Opposition argument {con_index+1}. "
                 # Parse argument
                 con_arg = motion['conArguments'][con_index]
-                premise = "" if not 'Premise' in con_arg else "Premise: " + con_arg['Premise'] + ". "
-                comparative = "" if not 'Comparative' in con_arg else "Comparative: " + con_arg['Comparative'] + ". "
-                mechanism = "" if not 'Mechanism' in con_arg else "Mechanism: " + con_arg['Mechanism'] + ". "
-                impact = "" if not 'Impact' in con_arg else "Impact: " + con_arg['Impact'] + ". "
+                premise = "" if not 'Premise' in con_arg else "Premise: " + con_arg['Premise'] + " "
+                comparative = "" if not 'Comparative' in con_arg else "Comparative: " + con_arg['Comparative'] + " "
+                mechanism = "" if not 'Mechanism' in con_arg else "Mechanism: " + con_arg['Mechanism'] + " "
+                impact = "" if not 'Impact' in con_arg else "Impact: " + con_arg['Impact'] + " "
                 # Add pro Argument
                 answer_string += premise + comparative + mechanism + impact
 
@@ -471,7 +472,7 @@ class InstructionGenerator:
         """
 
         if motion['Infoslide'] == "":
-            return generate_motion_instruction(self, motion) 
+            return self.generate_motion_instruction(motion) 
 
         # Tags 
         tags = []
@@ -550,10 +551,49 @@ class InstructionGenerator:
             question_string = f"{infoslide_string}on {prefix_string}{motion_string}"
 
         return [question_string,answer_string,tags_string]
+
+
+    def generate_all_instructions(self, data_path, output_path):
+        """
+        Gernerates the instruction dataset using the condensed data
+
+        Args:
+            data_path (str): path to condensed data
+            output_path (str): path to instruction data_set
+
+        Returns:
+        """
+        
+        motion_data = None
+        try:
+            with open(data_path, "r") as file:
+                motion_data = json.load(file)
+        except:
+            raise ValueError("Error opening file:",str(file))
+
+        instructions = [["Questions", "Answers", "Tags"]]
+        total = len(motion_data)
+        count = 0
+        for motion in motion_data:
+            rand_instruction = random.randint(0,7)
+            if rand_instruction < 4:
+                instructions.append(self.generate_motion_instruction(motion))
+            elif rand_instruction < 6:
+                instructions.append(self.generate_arguments_instruction(motion))
+            else:
+                instructions.append(self.generate_infoslide_instruction(motion))
+            count += 1
+            if count % 10 == 0:
+                print(f"COUNT: {count}/{total}")
+        try:
+            with open(output_path, "w") as file:
+                writer = csv.writer(file)
+                writer.writerows(instructions)
+        except:
+            raise ValueError("Error opening file:",str(file))
         
 
 if __name__ == '__main__':
     instructions = InstructionGenerator()
-    ex_condensed = {'Motion': 'This house regrets air', 'Infoslide': 'Air is made of gas', 'proArguments': [{'Premise': 'p', 'Comparative': 'c', 'Mechanism': 'm', 'Impact': 'i'}], 'conArguments': [{'Premise': 'np', 'Comparative': 'nc', 'Mechanism': 'nm', 'Impact': 'ni'}, {'Premise':'fingers','Comparative':'toes','Mechanism':'teeth','Impact':'YOWCH'}], 'Types': ['air', 'death', 'Infoslide']}
-    print(instructions.generate_infoslide_instruction(ex_condensed))
+    instructions.generate_all_instructions("condensed_motions.json", "motion_instructions.csv")
     
