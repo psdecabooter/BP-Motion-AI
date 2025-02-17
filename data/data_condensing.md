@@ -58,7 +58,6 @@ This will only include the bare necessities
         <ul>
             <li>Types</li>
             <li>Infoslide presence</li>
-            <li>Category of resolution</li>
         </ul>
     </li>
 </ul>
